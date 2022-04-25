@@ -1,3 +1,4 @@
+import InputBox from "./InputBox";
 import Stories from "./Stories";
 
 const Feed = () => {
@@ -7,6 +8,7 @@ const Feed = () => {
                 {/* Stories */}
                 <Stories />
                 {/* Inputbox */}
+                <InputBox />
                 {/* Posts */}
             </div>
         </div>
