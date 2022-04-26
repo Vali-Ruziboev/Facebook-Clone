@@ -5,14 +5,15 @@ import { CameraIcon, VideoCameraIcon } from '@heroicons/react/solid'
 import { useRef, useState } from "react";
 import { db } from "../firebase";
 import * as firebase from "firebase/app";
-import { addDoc, setDoc, doc, collection, serverTimestamp } from "firebase/firestore";
+import { getStorage, ref, uploadString, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { addDoc, doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const InputBox = () => {
     const {data: session} = useSession();
     const inputRef = useRef(null)
     const filepickerRef = useRef(null)
     const [imageToPost, setImageToPost] = useState(null)
-
+    const storage = getStorage()
     const sendPost =(e)=>{
         e.preventDefault();
 
@@ -24,6 +25,27 @@ const InputBox = () => {
                 email: session.user.email,
                 image: session.user.image,
                 timestamp: serverTimestamp()
+        }).then(dc=>{
+            if(imageToPost){
+                const storageRef  = ref(storage, `posts/${dc.id}`)
+                const uploadTask = uploadBytesResumable(storageRef, 'data_url');
+
+                removeImage();
+
+                uploadTask.on('state_changed', null, (error)=>console.error(error), 
+                    ()=>{
+                        // when the upload complete
+                        getDownloadURL(uploadTask.snapshot.ref).then(url=>{
+                            const d = doc(db, 'posts', 'post')
+                                setDoc(d, {
+                                    postImage:url
+                                },
+                                { merge: true}
+                                )
+                        })
+                    }
+                )
+            }
         })
 
         inputRef.current.value = ''
@@ -32,7 +54,7 @@ const InputBox = () => {
     const addImageToPost = (e)=>{
         const reader = new FileReader();
         if(e.target.files[0]){
-            reader.readAsBinaryString(e.target.files[0])
+            reader.readAsDataURL(e.target.files[0])
         }
         reader.onload = (readerEvent) => {
             setImageToPost(readerEvent.target.result)
