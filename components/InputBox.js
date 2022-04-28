@@ -27,29 +27,18 @@ const InputBox = () => {
                 timestamp: serverTimestamp()
         }).then(dc=>{
             if(imageToPost){
-                const metadata = {
-                    contentType: 'image/jpeg'
-                };
                 const storageRef  = ref(storage, `posts/${dc.id}`)
-                // const uploadTask = uploadBytesResumable(storageRef, imageToPost, metadata);
                 const uploadTask = uploadString(storageRef, imageToPost, 'data_url')
 
                 removeImage();
-
-                uploadTask.finally('state_changed', null, (error)=>console.error(error), ()=>{
-                        // when the upload complete
-                        console.log('hello');
-                        getDownloadURL(uploadTask.snapshot.ref).then(url=>{
-                            console.log(url);
-                            const d = doc(db, 'posts', `${dc.id}`)
-                            setDoc(d, {
-                                    postImage:url
-                                },
-                                { merge: true}
-                                )
-                        })
-                    }
-                )
+                uploadTask.then(()=>getDownloadURL(storageRef).then(url=>{
+                    const d = doc(db, 'posts', `${dc.id}`)
+                    setDoc(d, {
+                            postImage:url
+                        },
+                        { merge: true}
+                        )
+                }))
             }
         })
 
