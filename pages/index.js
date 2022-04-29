@@ -4,8 +4,11 @@ import Feed from '../components/Feed';
 import Header from '../components/Header'
 import Login from '../components/Login'
 import Sidebar from '../components/Sidebar';
+import Widgets from '../components/Widgets';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { db } from "../firebase";
 
-export default function Home({ session }) {
+export default function Home({ session, posts }) {
   if(!session) return <Login />;
   return (
     <div className='h-screen bg-gray-100 overflow-hidden'>
@@ -19,8 +22,9 @@ export default function Home({ session }) {
         {/* Sidebar */}
         <Sidebar />
         {/* Feed */}
-        <Feed />
+        <Feed posts={posts}/>
         {/* Widgets */}
+        <Widgets />
       </main>
     </div>
   )
@@ -31,9 +35,18 @@ export async function getServerSideProps(context){
   // Get the user
   const session = await getSession(context)
 
+  const posts = await getDocs(query(collection(db, 'posts'), orderBy('timestamp', 'desc')));
+
+  const docs = posts.docs.map(post=>({
+    id:post.id,
+    ... post.data(),
+    timestamp:null
+  }))
+
   return {
     props:{
-      session
+      session,
+      posts:docs
     }
   }
 }
