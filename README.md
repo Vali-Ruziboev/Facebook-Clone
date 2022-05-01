@@ -37,6 +37,6 @@ Users are be able to:
 
 ## Author
 
-- Frontend Mentor - [@Vali-Ruziboev](https://www.frontendmentor.io/profile/Vali-Ruziboev)
+- Twitter - [Vali Ruziboev](https://twitter.com/Vali_Ruziboev)
 - Instagram - [valiruziboev](https://www.instagram.com/vali_ruziboev/)
 - Linkedin - [Vali Ruziboev](https://www.linkedin.com/in/vali-ruziboev/)
