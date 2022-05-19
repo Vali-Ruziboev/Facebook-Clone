@@ -1,6 +1,6 @@
 ## Facebook Clone
 
-Fully responsive Logistics web site.
+Fully responsive Facebook clone.
 
 ## Table of contents
 - [Overview](#overview)
