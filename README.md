@@ -32,6 +32,7 @@ Users are be able to:
 - Flexbox
 - Mobile-first workflow
 - Next.js
+- NextAuth
 - Tailwind CSS
 - Firebase
 
